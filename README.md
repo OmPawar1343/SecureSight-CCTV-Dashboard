@@ -1,3 +1,31 @@
+# SecureSight CCTV Dashboard
+
+This project is a technical assessment for SecureSight, a fictional CCTV monitoring software. It includes a Next.js 15 frontend and backend, Prisma ORM, and SQLite database. The dashboard features:
+
+- Navbar
+- Incident Player (left)
+- Incident List (right)
+
+## Backend
+- Prisma models for Camera and Incident
+- Seed script to populate cameras and incidents
+- API routes:
+  - GET /api/incidents?resolved=false
+  - PATCH /api/incidents/:id/resolve
+
+## Frontend
+- Incident Player: Large video frame (static), camera thumbnails
+- Incident List: Thumbnail, type icon, camera location, time, resolve button
+
+## Setup
+1. Install dependencies: `npm install`
+2. Run the development server: `npm run dev`
+
+## Next Steps
+- Add Prisma and SQLite setup
+- Implement data models and seed script
+- Build API routes and frontend components
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
