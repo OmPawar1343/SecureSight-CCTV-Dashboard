@@ -37,14 +37,15 @@ export default function IncidentList({ incidents, onResolve }: IncidentListProps
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <span
-                  className={`inline-block w-3 h-3 rounded-full
-                    ${incident.type === 'Gun Threat'
+                  className={`inline-block w-3 h-3 rounded-full ${
+                    incident.type === 'Gun Threat'
                       ? 'bg-red-500'
                       : incident.type === 'Unauthorised Access'
                       ? 'bg-yellow-500'
                       : incident.type === 'Face Recognised'
                       ? 'bg-green-500'
-                      : 'bg-blue-500'}`}
+                      : 'bg-blue-500'
+                  }`}
                 ></span>
                 <span className="font-bold">
                   {incident.type === 'Face Recognised' && <span className="mr-1">👤</span>}
