@@ -1,74 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-interface Incident {
-  id: number;
-  type: 'Gun Threat' | 'Unauthorised Access' | 'Face Recognised' | string;
-  resolved: boolean;
-  thumbnailUrl: string;
-  tsStart: string | number | Date;
-  tsEnd: string | number | Date;
-  camera: {
-    location: string;
-  };
+interface IncidentPlayerProps {
+  videoUrls: string[]; // array of incident types or video paths
 }
 
-interface IncidentListProps {
-  incidents: Incident[];
-  onResolve: (id: number) => void;
-}
+const videoMap: { [key: string]: string } = {
+  'Face Recognised': '/cam1.mp4',
+  'Gun Threat': '/cam2.mp4',
+  'Unauthorised Access': '/cam3.gif',
+};
 
-export default function IncidentList({ incidents, onResolve }: IncidentListProps) {
+export default function IncidentPlayer({ videoUrls }: IncidentPlayerProps) {
+  const [mainVideo, setMainVideo] = useState<string>("");
+
+  useEffect(() => {
+    if (videoUrls.length > 0) {
+      setMainVideo(videoUrls[0]);
+    }
+  }, [videoUrls]);
+
+  const getVideoSrc = (key: string) => videoMap[key] || key;
+
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <h2 className="text-lg font-semibold mb-4">Incident List</h2>
-      <ul className="space-y-4">
-        {incidents.map((incident) => (
-          <li
-            key={incident.id}
-            className={`flex items-center gap-4 p-2 rounded transition-opacity ${
-              incident.resolved ? 'opacity-50' : ''
+    <div className="bg-white rounded-lg shadow p-4 flex flex-col items-center">
+      <div className="w-full h-64 bg-gray-200 flex items-center justify-center mb-4 rounded overflow-hidden">
+        {mainVideo ? (
+          <video
+            src={getVideoSrc(mainVideo)}
+            controls
+            className="object-cover h-full w-full"
+          />
+        ) : (
+          <p className="text-gray-500">No video available</p>
+        )}
+      </div>
+      <div className="flex gap-2 overflow-x-auto">
+        {videoUrls.map((src, idx) => (
+          <video
+            key={`${src}-${idx}`}
+            src={getVideoSrc(src)}
+            controls
+            onClick={() => setMainVideo(src)}
+            className={`w-16 h-16 object-cover rounded border cursor-pointer ${
+              mainVideo === src ? 'ring-2 ring-blue-500' : ''
             }`}
-          >
-            <img
-              src={incident.thumbnailUrl}
-              alt="Thumbnail"
-              className="w-16 h-16 object-cover rounded border"
-            />
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`inline-block w-3 h-3 rounded-full ${
-                    incident.type === 'Gun Threat'
-                      ? 'bg-red-500'
-                      : incident.type === 'Unauthorised Access'
-                      ? 'bg-yellow-500'
-                      : incident.type === 'Face Recognised'
-                      ? 'bg-green-500'
-                      : 'bg-blue-500'
-                  }`}
-                ></span>
-                <span className="font-bold">
-                  {incident.type === 'Face Recognised' && <span className="mr-1">👤</span>}
-                  {incident.type}
-                </span>
-              </div>
-              <div className="text-sm text-gray-600">{incident.camera.location}</div>
-              <div className="text-xs text-gray-400">
-                {new Date(incident.tsStart).toLocaleTimeString()} -{' '}
-                {new Date(incident.tsEnd).toLocaleTimeString()}
-              </div>
-            </div>
-            {!incident.resolved && (
-              <button
-                onClick={() => onResolve(incident.id)}
-                className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition"
-              >
-                Resolve
-              </button>
-            )}
-          </li>
+          />
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
